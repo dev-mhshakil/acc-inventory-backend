@@ -10,18 +10,7 @@ const {
 
 exports.createProduct = async (req, res, next) => {
   try {
-    //   save or create a product
-
-    // const product = new Product(req.body);
-
-    // const product = await Product.create(req.body);
-
-    // if (product.quantity == 0) {
-    //   product.status = "out-of-stock";
-    // }
-
     const result = await createProductService(req.body);
-    result.logger();
 
     res.status(201).json({
       status: "success",
@@ -98,6 +87,13 @@ exports.updateProduct = async (req, res, next) => {
     const { id } = req.params;
     const data = req.body;
     const product = await updateProductByIdService(id, data);
+
+    if (!product.nModified) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Couldn't update the brand with this id",
+      });
+    }
 
     res.status(200).json({
       status: "success",
